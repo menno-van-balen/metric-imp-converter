@@ -8,7 +8,6 @@
 
 function ConvertHandler() {
   const unitRegex = /(gal|lbs|mi)$/;
-  // console.log(unitRegex);
 
   this.getNum = function (input) {
     // const unitLength = input.match(unitRegex)[0].length;

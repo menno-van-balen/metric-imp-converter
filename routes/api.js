@@ -29,7 +29,5 @@ module.exports = function (app) {
     );
 
     res.json(toString);
-    // res.text = toString;
-    // console.log(res);
   });
 };
