@@ -7,21 +7,44 @@
  */
 
 function ConvertHandler() {
-  const unitRegex = /(gal|lbs|mi)$/;
+  const numRegex = /^\d+\.?\d*,?\/?\d*/;
+  const unitRegex = /^(gal|lbs|mi)$/;
+  const commaRegex = /^\d+,\d?/g;
+
+  this.testNumInput = function (result) {
+    if (!numRegex.test(result)) {
+      return (result = "1" + result);
+    }
+    return result;
+  };
 
   this.getNum = function (input) {
-    // const unitLength = input.match(unitRegex)[0].length;
-    var result = input.replace(unitRegex, "");
-    console.log("initNum:", +result);
-    return +result;
+    var result = input;
+    result = this.testNumInput(result);
+
+    if (commaRegex.test(result)) {
+      console.log("initNum: invalid number");
+      return (result = "invalid number");
+    } else {
+      result = result.match(numRegex)[0];
+      if (result[result.length - 1] === "/") result = result.replace("/", "");
+      result = eval(result);
+      console.log("initNum:", +result);
+      return +result;
+    }
   };
 
   this.getUnit = function (input) {
-    var result;
-    if (input.match(unitRegex) === null) result = "invalid unit";
-    else result = input.match(unitRegex)[0];
-    console.log("initUnit:", result);
-    return result;
+    var result = input;
+    result = this.testNumInput(result);
+    result = result.replace(numRegex, "");
+    if (!unitRegex.test(result)) {
+      console.log("initUnit: invalid unit");
+      return (result = "invalid unit");
+    } else {
+      console.log("initUnit:", result);
+      return result;
+    }
   };
 
   this.getReturnUnit = function (initUnit) {
@@ -61,15 +84,20 @@ function ConvertHandler() {
     let string = `${initNum} ${this.spellOutUnit(
       initUnit
     )} converts to ${returnNum} ${this.spellOutUnit(returnUnit)}`;
-    console.log(isNaN(initNum));
+    // console.log(isNaN(initNum));
     var result;
-    if (initUnit === "invalid unit")
-      result = { Error: initUnit, string: initUnit };
-    else if (isNaN(initNum))
-      result = { Error: "invalid number", string: "invalid number" };
-    else result = { initNum, initUnit, returnNum, returnUnit, string };
-
-    return result;
+    if (initUnit === "invalid unit" && initNum === "invalid number") {
+      return (result = {
+        Error: "invalid number and unit",
+        string: "invalid number and unit",
+      });
+    } else if (initUnit === "invalid unit") {
+      return (result = { Error: initUnit, string: initUnit });
+    } else if (isNaN(initNum)) {
+      return (result = { Error: "invalid number", string: "invalid number" });
+    } else {
+      return (result = { initNum, initUnit, returnNum, returnUnit, string });
+    }
   };
 }
 
