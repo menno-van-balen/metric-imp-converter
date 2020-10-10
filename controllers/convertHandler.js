@@ -7,9 +7,9 @@
  */
 
 function ConvertHandler() {
-  const numRegex = /^\d+\.?\d*,?\/?\d*/;
+  const numRegex = /^\d+\.?,?\d*\/?\d*/;
   const unitRegex = /^(gal|lbs|mi)$/;
-  const commaRegex = /^\d+,\d?/g;
+  const commaRegex = /^\d+,\d?/;
 
   this.testNumInput = function (result) {
     if (!numRegex.test(result)) {
@@ -76,6 +76,7 @@ function ConvertHandler() {
     if (initUnit === "gal") result = initNum * galToL;
     if (initUnit === "lbs") result = initNum * lbsToKg;
     if (initUnit === "mi") result = initNum * miToKm;
+    if (result !== undefined) result = result.toFixed(5);
     console.log("returnNumber:", result);
     return result;
   };
@@ -84,19 +85,18 @@ function ConvertHandler() {
     let string = `${initNum} ${this.spellOutUnit(
       initUnit
     )} converts to ${returnNum} ${this.spellOutUnit(returnUnit)}`;
-    // console.log(isNaN(initNum));
-    var result;
+
     if (initUnit === "invalid unit" && initNum === "invalid number") {
-      return (result = {
+      return {
         Error: "invalid number and unit",
         string: "invalid number and unit",
-      });
+      };
     } else if (initUnit === "invalid unit") {
-      return (result = { Error: initUnit, string: initUnit });
+      return { Error: initUnit, string: initUnit };
     } else if (isNaN(initNum)) {
-      return (result = { Error: "invalid number", string: "invalid number" });
+      return { Error: "invalid number", string: "invalid number" };
     } else {
-      return (result = { initNum, initUnit, returnNum, returnUnit, string });
+      return { initNum, initUnit, returnNum, returnUnit, string };
     }
   };
 }
