@@ -38,6 +38,7 @@ function ConvertHandler() {
     var result = input;
     result = this.testNumInput(result);
     result = result.replace(numRegex, "");
+
     if (!unitRegex.test(result)) {
       console.log("initUnit: invalid unit");
       return (result = "invalid unit");
