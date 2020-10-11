@@ -40,7 +40,7 @@ suite("Unit Tests", function () {
 
     test("Invalid Input (double fraction)", function (done) {
       var input = "1/5/2mi";
-      assert.equal(convertHandler.getNum(input), 0.2);
+      assert.equal(convertHandler.getNum(input), "invalid number");
       done();
     });
 

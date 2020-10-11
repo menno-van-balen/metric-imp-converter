@@ -7,9 +7,11 @@
  */
 
 function ConvertHandler() {
-  const numRegex = /^\d+\.?,?\d*\/?\d*/;
+  const numRegex = /^\d+\.*,*\/*\d*\.*,*\/*\d*\.*,*\/*\d*\.*,*\/*\d*/;
+  const dotRegex = /\./g;
+  const divideRegex = /\//g;
+  const commaRegex = /,/g;
   const unitRegex = /^(gal|l|lbs|kg|mi|km)$/;
-  const commaRegex = /^\d+,\d?/;
 
   this.testNumInput = function (result) {
     if (!numRegex.test(result)) {
@@ -21,12 +23,16 @@ function ConvertHandler() {
   this.getNum = function (input) {
     var result = input;
     result = this.testNumInput(result);
+    result = result.match(numRegex)[0];
 
-    if (commaRegex.test(result)) {
+    if (
+      commaRegex.test(result) ||
+      (result.match(dotRegex) && result.match(dotRegex).length > 1) ||
+      (result.match(divideRegex) && result.match(divideRegex).length > 1)
+    ) {
       // console.log("initNum: invalid number");
       return (result = "invalid number");
     } else {
-      result = result.match(numRegex)[0];
       if (result[result.length - 1] === "/") result = result.replace("/", "");
       result = eval(result);
       // console.log("initNum:", +result);
