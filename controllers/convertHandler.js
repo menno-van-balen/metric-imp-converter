@@ -8,7 +8,7 @@
 
 function ConvertHandler() {
   const numRegex = /^\d+\.?,?\d*\/?\d*/;
-  const unitRegex = /^(gal|lbs|mi)$/;
+  const unitRegex = /^(gal|l|lbs|kg|mi|km)$/;
   const commaRegex = /^\d+,\d?/;
 
   this.testNumInput = function (result) {
@@ -23,13 +23,13 @@ function ConvertHandler() {
     result = this.testNumInput(result);
 
     if (commaRegex.test(result)) {
-      console.log("initNum: invalid number");
+      // console.log("initNum: invalid number");
       return (result = "invalid number");
     } else {
       result = result.match(numRegex)[0];
       if (result[result.length - 1] === "/") result = result.replace("/", "");
       result = eval(result);
-      console.log("initNum:", +result);
+      // console.log("initNum:", +result);
       return +result;
     }
   };
@@ -40,31 +40,34 @@ function ConvertHandler() {
     result = result.replace(numRegex, "");
 
     if (!unitRegex.test(result)) {
-      console.log("initUnit: invalid unit");
+      // console.log("initUnit: invalid unit");
       return (result = "invalid unit");
     } else {
-      console.log("initUnit:", result);
+      // console.log("initUnit:", result);
       return result;
     }
   };
 
   this.getReturnUnit = function (initUnit) {
     var result;
-    if (initUnit === "gal") result = "L";
+    if (initUnit === "gal") result = "l";
+    if (initUnit === "l") result = "gal";
     if (initUnit === "lbs") result = "kg";
+    if (initUnit === "kg") result = "lbs";
     if (initUnit === "mi") result = "km";
+    if (initUnit === "km") result = "mi";
     if (initUnit === "invalid unit") result = initUnit;
-    console.log("returnunit:", result);
+    // console.log("returnunit:", result);
     return result;
   };
 
   this.spellOutUnit = function (unit) {
     var result;
     if (unit === "gal") result = "gallons";
+    if (unit === "l") result = "liters";
     if (unit === "lbs") result = "pounds";
-    if (unit === "mi") result = "miles";
-    if (unit === "L") result = "liters";
     if (unit === "kg") result = "kilograms";
+    if (unit === "mi") result = "miles";
     if (unit === "km") result = "kilometers";
     return result;
   };
@@ -75,11 +78,14 @@ function ConvertHandler() {
     const miToKm = 1.60934;
     var result;
     if (initUnit === "gal") result = initNum * galToL;
+    if (initUnit === "l") result = initNum / galToL;
     if (initUnit === "lbs") result = initNum * lbsToKg;
+    if (initUnit === "kg") result = initNum / lbsToKg;
     if (initUnit === "mi") result = initNum * miToKm;
+    if (initUnit === "km") result = initNum / miToKm;
     if (result !== undefined) result = result.toFixed(5);
-    console.log("returnNumber:", result);
-    return result;
+    // console.log("returnNumber:", +result);
+    return +result;
   };
 
   this.getString = function (initNum, initUnit, returnNum, returnUnit) {
