@@ -18,7 +18,6 @@ module.exports = function (app) {
     var input = req.query.input;
     input = input.toLowerCase();
     var initNum = convertHandler.getNum(input);
-    // console.log(initNum);
     var initUnit = convertHandler.getUnit(input);
     var returnNum = convertHandler.convert(initNum, initUnit);
     var returnUnit = convertHandler.getReturnUnit(initUnit);
@@ -29,6 +28,21 @@ module.exports = function (app) {
       returnUnit
     );
 
-    res.json(toString);
+    // res.json(toString);
+    if (initUnit == "invalid unit" && initNum == "invalid number") {
+      return res.json("invalid number and unit");
+    } else if (initUnit == "invalid unit") {
+      return res.json(initUnit);
+    } else if (initNum == "invalid number") {
+      return res.json(initNum);
+    } else {
+      return res.json({
+        initNum: initNum,
+        initUnit: initUnit,
+        returnNum: returnNum,
+        returnUnit: returnUnit,
+        string: toString,
+      });
+    }
   });
 };
